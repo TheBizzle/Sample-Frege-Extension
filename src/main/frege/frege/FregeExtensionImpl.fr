@@ -1,0 +1,29 @@
+package org.nlogo.extensions.frege.FregeExtensionImpl where
+
+import Data.wrapper.Num(Sum, Sum.unwrap)
+import Data.Monoid(mappend)
+import Data.Foldable(fold, Foldable)
+
+import frege.prelude.PreludeList hiding (fold, all, and, any, break, chunked, concat, concatMap, cycle, dropWhile, elem, filter, foldl, foldl1, foldr, foldr1, foldrs, init, iterate, last, map, maximum, minimum, notElem, or, product, repeat, replicate, reverse, scanl, scanl1, scanr, scanr1, span, splitAt, strhead, sum, takeWhile, unpacked, unzip, unzip3, zip, zip3, zipWith, zipWith3 , ListView.uncons, ListView.tail, ListView.take, ListSource.toList, ListEmpty.null, ListView.length, ListView.head, ListEmpty.empty, ListView.drop, ListSemigroup.++, ListView, ListSemigroup, ListEmpty, ListSource, ListMonoid, ListView_StringJ, ListSource_Either, ListSource_Maybe, ListMonoid_StringJ)
+
+import frege.prelude.PreludeArrays(JArray.length, JArray.itemAt)
+
+f >>> g = g . f
+infixl 16 >>>
+
+a |> f = f a
+infixl 16 |>
+
+convertEachItem = fmap
+
+sumList :: (Foldable a, Functor a) => (a Double) -> Double
+sumList = ((fmap Sum) >>> fold >>> unwrap)
+
+jarrayToList :: JArray a -> [a]
+jarrayToList !jarray = [0..((length jarray) - 1)] |> (mapMaybe $ itemAt jarray)
+
+sumListJava :: JArray Double -> Double
+sumListJava = (jarrayToList >>> sumList)
+
+--main :: [String] -> IO ()
+--main = ((fmap atoi) >>> sumList >>> println)
